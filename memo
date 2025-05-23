@@ -1,0 +1,2 @@
+// runs in pom.xml folder (do cd [folder])
+mvn clean verify 

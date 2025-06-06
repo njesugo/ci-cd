@@ -20,9 +20,13 @@ jobs:
       - name: Install Ansible
         run: sudo apt-get update && sudo apt-get install -y ansible
 
+      - name: Debug current directory content
+        run: |
+          pwd
+          ls -l
+
       - name: Run Ansible Playbook
-        working-directory: ./ansible
-        run: ansible-playbook -i inventories/setup.yml deploy.yml
+        run: ansible-playbook -i ansible/inventories/setup.yml ansible/deploy.yml
 
       - name: Debug Event
         run: echo "Triggered by event_type=${{ github.event_type }}"

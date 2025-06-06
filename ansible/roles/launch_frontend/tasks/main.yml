@@ -1,0 +1,12 @@
+- name: Run Frontend container
+  community.docker.docker_container:
+    name: frontend
+    image: "{{ lookup('env', 'DOCKER_USERNAME') }}/tp-devops-frontend:latest"
+    pull: true
+    recreate: true
+    ports:
+      - "80:80"
+    networks:
+      - name: my_app_network
+    state: started
+    restart_policy: always

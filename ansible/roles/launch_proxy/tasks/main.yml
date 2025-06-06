@@ -2,6 +2,8 @@
   community.docker.docker_container:
     name: httpd
     image: mrjj001/tp-devops-httpd:latest
+    pull: true
+    recreate: true
     ports:
       - "80:80"
     networks:

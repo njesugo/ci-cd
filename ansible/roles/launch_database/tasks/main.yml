@@ -2,6 +2,8 @@
   community.docker.docker_container:
     name: my_db
     image: mrjj001/tp-devops-database
+    pull: true
+    recreate: true
     env:
       POSTGRES_USER: myuser
       POSTGRES_PASSWORD: mypass

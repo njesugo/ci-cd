@@ -70,3 +70,10 @@ jobs:
           context: ./http-server
           tags: ${{ secrets.DOCKER_USERNAME }}/tp-devops-httpd:latest
           push: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Trigger deployment in Ansible repo
+        run: |
+          curl -X POST https://api.github.com/repos/njesugo/ansible/dispatches \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: token ${{ secrets.REPO_B_DEPLOY_TOKEN }}" \
+          -d '{"event_type": "dockerhub_push"}'

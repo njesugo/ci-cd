@@ -16,7 +16,7 @@ jobs:
   test-backend:
     runs-on: ubuntu-24.04
     steps:
-      # Checkout le code here too
+      # Checkout le code
       - uses: actions/checkout@v4
 
       # Setup Java JDK 21
@@ -73,6 +73,7 @@ jobs:
 
   deploy-on-push:
     needs: build-and-push-docker-image
+
     if: success()
     runs-on: ubuntu-latest
 

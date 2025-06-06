@@ -1,0 +1,105 @@
+- hosts: all
+  gather_facts: true
+  become: true
+
+  tasks:
+    # 1. Install prerequisites
+    - name: Install required packages
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+          - python3-venv
+        state: latest
+        update_cache: yes
+
+    # 2. Add Docker GPG key
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+        state: present
+
+    # 3. Add Docker APT repository
+    - name: Add Docker APT repository
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_facts['distribution_release'] }} stable"
+        state: present
+        update_cache: yes
+
+    # 4. Install Docker
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+
+    # 5. Install Python3 and pip3
+    - name: Install Python3 and pip3
+      apt:
+        name:
+          - python3
+          - python3-pip
+        state: present
+
+    # 6. Create a virtual environment
+    - name: Create a virtual environment for Docker SDK
+      command: python3 -m venv /opt/docker_venv
+      args:
+        creates: /opt/docker_venv
+
+    # 7. Install Docker SDK for Python
+    - name: Install Docker SDK for Python in virtual environment
+      command: /opt/docker_venv/bin/pip install docker
+
+    # 8. Ensure Docker is running
+    - name: Make sure Docker is running
+      service:
+        name: docker
+        state: started
+      tags: docker
+
+    - name: Create Docker network
+      community.docker.docker_network:
+        name: my_app_network
+        state: present
+      vars:
+        ansible_python_interpreter: /usr/bin/python3
+
+    - name: Launch PostgreSQL database
+      community.docker.docker_container:
+        name: my_db
+        image: postgres:15
+        env:
+          POSTGRES_USER: myuser
+          POSTGRES_PASSWORD: mypass
+          POSTGRES_DB: mydb
+        networks:
+          - name: my_app_network
+        state: started
+
+
+    - name: Launch Application
+      community.docker.docker_container:
+        name: my_app
+        image: your-dockerhub-username/your-app-image:latest
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://my_db:5432/mydb
+          SPRING_DATASOURCE_USERNAME: myuser
+          SPRING_DATASOURCE_PASSWORD: mypass
+        networks:
+          - name: my_app_network
+        state: started
+
+    - name: Launch Nginx proxy
+      community.docker.docker_container:
+        name: my_proxy
+        image: nginx:alpine
+        ports:
+          - "80:80"
+        networks:
+          - name: my_app_network
+        volumes:
+          - /home/admin/nginx.conf:/etc/nginx/nginx.conf:ro
+        state: started

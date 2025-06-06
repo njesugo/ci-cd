@@ -1,0 +1,14 @@
+- name: Run application container from Docker Hub
+  community.docker.docker_container:
+    name: simple-api
+    image: mrjj001/tp-devops-simple-api
+    env:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://my_db:5432/mydb
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: mypass
+    ports:
+      - "8080:8080"
+    networks:
+      - name: my_app_network
+    state: started
+    restart_policy: always

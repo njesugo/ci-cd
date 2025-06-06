@@ -1,0 +1,12 @@
+- hosts: all
+  become: true
+  gather_facts: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  roles:
+    - install_docker
+    - create_network
+    - launch_database
+    - launch_app
+    - launch_proxy

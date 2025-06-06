@@ -16,7 +16,7 @@ jobs:
   test-backend:
     runs-on: ubuntu-24.04
     steps:
-      # Checkout le code
+      # Checkout le code here too
       - uses: actions/checkout@v4
 
       # Setup Java JDK 21

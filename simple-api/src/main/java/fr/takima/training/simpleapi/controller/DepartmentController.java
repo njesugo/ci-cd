@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin
-@RequestMapping(value = "/department")
+@RequestMapping(value = "/departmen")
 public class DepartmentController {
     private final DepartmentService departmentService;
     private final StudentService studentService;

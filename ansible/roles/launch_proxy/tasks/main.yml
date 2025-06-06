@@ -1,11 +1,12 @@
-- name: Run HTTPD container with reverse proxy config
+- name: Run frontend container with embedded reverse proxy
   community.docker.docker_container:
-    name: httpd
-    image: mrjj001/tp-devops-httpd:latest
+    name: frontend
+    image: "{{ docker_username }}/tp-devops-frontend:latest"
     pull: true
     recreate: true
     ports:
-      - "80:80"
+      - "8081:80"
     networks:
       - name: my_app_network
     state: started
+    restart_policy: always

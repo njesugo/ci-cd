@@ -1,3 +1,6 @@
+- vars:
+  docker_username: "{{ lookup('env', 'DOCKER_USERNAME') }}"
+
 - hosts: all
   become: true
   gather_facts: true
